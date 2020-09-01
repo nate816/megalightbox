@@ -21,6 +21,7 @@
 
     var resizeDone, captionsLoaded = false, imgCount;
     var notLoaded = true;
+    var foo = "test";
 
     window.addEventListener('resize', () => {
         clearTimeout(resizeDone),
