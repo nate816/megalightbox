@@ -1,6 +1,11 @@
-
+    //************************************************************************
+    // MIT License
+    // Copyright (c) 2020 Nate Fazakerly 
+    //************************************************************************
+    
     //************************************************************************
     //  USER OPTIONS
+    //************************************************************************
     const options = {
         'filePath' : "lightbox/", // directory path to your lightbox files
         'captions': true, // enable captions - true or false*
@@ -21,7 +26,6 @@
 
     var resizeDone, captionsLoaded = false, imgCount;
     var notLoaded = true;
-    var foo = "test";
 
     window.addEventListener('resize', () => {
         clearTimeout(resizeDone),
