@@ -1,0 +1,163 @@
+/* ==========================================================================
+            RESET STYLES - USED IN DEMO BUT MAYBE NOT YOUR PROJECT
+   ========================================================================== */
+
+   html, body { height:100%; width:100%; margin:0; }
+   body { background: url('images/double-bubble-dark.png'); };
+   
+   img { max-width:100%; }
+   *, *:before, *:after {
+       -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+     }
+
+   /* CLEARFIX: */
+   .clearfix:before, .clearfix:after { content: " "; /* 1 */ display: block; /* 2 */}
+   .clearfix:after { clear: both; }
+    
+   /* ==========================================================================
+               GALLERY STYLES - GRID
+      ========================================================================== */
+   
+   #container { padding:10px; position:relative; z-index:1; }
+   
+   #gallery { display: grid;  grid-gap: 10px;  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));  grid-auto-rows: auto;  grid-auto-flow: dense;  align-content: center; text-align: center; }
+   
+   .vertical {  grid-row: span 2; }
+   
+   .thumb {  display:none; }
+   
+   .loader img {  background:#ccc; }
+   
+   #gallery div {  overflow:hidden;  text-align:center;  }
+   
+   .loader img, .thumb img {  width: 100%;  height: 100%;  object-fit: cover; transition:500ms ease;  opacity:1; vertical-align: middle; }
+   
+   .thumb-zoom { transform:scale(1.08); }
+   
+   .thumb-slide { transform: translateX(-40px); }
+   
+   .thumb-drop { transform: translateY(40px); }
+   
+   /* ==========================================================================
+               LIGHTBOX STYLES - GRID
+      ========================================================================== */
+   
+   .lightbox { display: none; height:100%; width:100vw; z-index: 6; position:fixed; top:0; left:0; align-content: center; /* vertically align grid inside container */ justify-items: center; /* horizontally align grid inside container */  grid-template-columns: 1fr; grid-template-rows: auto auto;  padding:10px;  background:rgba(0,0,0,0.8);  }
+   
+  .lightbox > div > img { box-shadow: 0 2px 20px black; object-fit: cover; max-width:100%; max-height:70vh; height:auto;  }
+
+  .img-wrap { z-index:6; }
+   
+   /* ==========================================================================
+               LIGHTBOX NAVIGATION
+      ========================================================================== */
+
+   .closeP { z-index:6; position: absolute; height:50px; left:50%; text-align:right; }
+   .closeP i { font-size:36px; color:#e5e5e5; }
+   .closeP a { display:block; float:right; transition:0.3s; margin:5px 0; cursor:pointer; text-shadow:1px 1px 2px #222; cursor:pointer; }
+   
+   .lightbox-nav { display:none; position:absolute; height: 50px; top:50%; left:50%; z-index:6; margin-top:-40px; }
+
+   .lightbox-nav a, .closeP a { border-radius:50px; padding:2px; background: #333333; }
+
+   .lightbox-nav a:hover, .closeP a:hover { background: #666666; }
+
+   .text-left { text-align:left; }
+   .text-right { text-align:right; }
+   .float-left { float:left; }
+   .float-right { float:right; }
+   
+   .lightbox-nav i { color:#e5e5e5; }
+   .lightbox-nav a { display:block; color:#e5e5e5; text-shadow:1px 1px 2px #222; transition:0.3s; cursor: pointer; }
+   
+   /* CAPTION: */
+   .caption { background: none; padding:3px 20px; margin-top:5px; text-shadow:2px 2px 2px rgba(0,0,0,0.5); border-left: 4px solid #cccccc;  }
+
+   @media screen and (max-width: 827px) {
+      .caption p {font-size:0.95em; line-height:1.3; }
+      .caption h3 { font-size:1.2em; line-height:1.1; }
+   } 
+   
+   
+   /* ==========================================================================
+               ANIMATIONS
+      ========================================================================== */
+   
+   /* lightbox navigation */
+   
+   @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+   .fadein { animation:fadein .3s ease forwards; }
+
+   @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
+   .fadeout { animation:fadeout .3s ease forwards; }
+   
+   /* TOUCH ANIMATIONS: */
+   
+   @keyframes swipeLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-35px); } }
+   .swipeLeft { animation:swipeLeft .5s ease-in forwards; }
+   
+   @keyframes swipeRight { 0% { transform: translateX(0); } 100% { transform: translateX(35px); } }
+   .swipeRight { animation:swipeRight .5s ease-in forwards; }
+   
+   /* SLIDER ANIMATIONS: */
+   
+   @keyframes slideRight { 0% { opacity:0; transform: translateX(-75px); } 100% { opacity:1; transform: translateX(0); } }
+   .slideRight { animation:slideRight .4s ease-in forwards; }
+   
+   @keyframes slideLeft { 0% { opacity:0; transform: translateX(75px); } 100% { opacity:1; transform: translateX(0); } }
+   .slideLeft { animation:slideLeft .4s ease-in forwards; }
+   
+   @keyframes zoomOut { 0% { opacity:0; transform: scale(1.3); } 100% { opacity:1; transform: scale(1); } }
+   .zoomOut { animation:zoomOut .4s ease-in forwards; }
+   
+   /* loader */
+   
+   @-webkit-keyframes load { 0% { -webkit-transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); } }
+   
+   @keyframes load { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+   
+   /* for loader boxes: */
+   
+   @keyframes fadeRight { 0% { opacity:0; transform: translateX(-68px); } 100% { opacity:1; transform: translateX(0); } }
+   .fadeRight { animation:fadeRight 2s ease-out infinite; }
+   
+   @keyframes fadeDown { 0% { opacity:0; transform: translateY(-30px); } 100% { opacity:1; transform: translateY(0); } }
+   .fadeDown { animation:fadeDown .4s ease-in forwards; }
+   
+   /* ==========================================================================
+               IMG LOADER STYLES
+      ========================================================================== */
+   
+   .loader-img { z-index:5; display:none; position: absolute; top:calc(50% - 25px); left: calc(50% - 25px); width: 50px; height: 50px; border: 5px solid #e2e2e2; border-radius: 50%; border-top: 5px solid rgb(199, 134, 22); -webkit-animation: load 800ms ease-in-out infinite; animation: load 800ms ease-in-out infinite; }
+
+   .loader-captions { display:none; position: relative; z-index: 7; width: 50px; height: 50px; border: 5px solid #e2e2e2; margin:0 auto; border-radius: 50%; border-top: 5px solid rgb(199, 134, 22); -webkit-animation: load 800ms ease-in-out infinite; animation: load 800ms ease-in-out infinite; }
+   
+   /* ==========================================================================
+               ICONS
+      ========================================================================== */
+   
+   .icon-large { font-size:32px !important; }
+   .icon-xlarge { font-size:42px !important; }
+   .material-icons { vertical-align:middle; margin-bottom:1px;  -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+   /* ==========================================================================
+            BELOW IS PROPRIETARY...DON'T NEED
+   ========================================================================== */
+ 
+   /* ==========================================================================
+               TYPOGRAPHY
+      ========================================================================== */
+
+   .caption p { font-family: "Roboto", serif; font-weight: 300; font-style: normal; color:#e5e5e5; font-size:1.1em; line-height:1.4; margin:0; }
+   .caption h3 { font-family: "Bebas Neue", helvetica, sans-serif; text-transform: uppercase; font-weight: 300; font-style: normal; color:#b9b9b9; font-size:1.4em;  color:#FFA000; margin:0.1em; }
+   
+/* ==========================================================================
+            MEDIA QUERIES
+   ========================================================================== */
+
+@media screen and (max-width: 827px) {
+   h1 {font-size:2em; line-height:1.5; }
+   h2 { font-size:1.5em; line-height:1.4; }
+   h3 { font-size:1.5em; line-height:1.3; }
+   p { font-size:1.2em; line-height:1.4; }
+} 

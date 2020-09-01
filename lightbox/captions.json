@@ -1,0 +1,30 @@
+{
+    "Caption 1": {
+        "Header": "Header (h3) for image #1.",
+        "Caption": "Caption (paragraph) for image #1. You can change these in captions.json, or change styles in lightbox.css."
+    },
+    "Caption 2": {
+        "Header": "Header (h3) for image #2.",
+        "Caption": "Caption (paragraph) for image #2. You can change these in captions.json, or change styles in lightbox.css."
+    },
+    "Caption 3": {
+        "Header": "Header (h3) for image #3.",
+        "Caption": "Caption (paragraph) for image #3. You can change these in captions.json, or change styles in lightbox.css."
+    },
+    "Caption 4": {
+        "Header": "Header (h3) for image #4.",
+        "Caption": "Caption (paragraph) for image #4. You can change these in captions.json, or change styles in lightbox.css."
+    },
+    "Caption 5": {
+        "Header": "Header (h3) for image #5.",
+        "Caption": "Caption (paragraph) for image #5. You can change these in captions.json, or change styles in lightbox.css."
+    },
+    "Caption 6": {
+        "Header": "Header (h3) for image #6.",
+        "Caption": "Caption (paragraph) for image #6. You can change these in captions.json, or change styles in lightbox.css."
+    },
+    "Caption 7": {
+        "Header": "Header (h3) for image #7.",
+        "Caption": "Caption (paragraph) for image #7. You can change these in captions.json, or change styles in lightbox.css."
+    }
+}
