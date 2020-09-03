@@ -6,6 +6,9 @@
     //************************************************************************
     //  USER OPTIONS
     //************************************************************************
+    
+    //************************************************************************
+    //  USER OPTIONS
     const options = {
         'filePath' : "lightbox/", // directory path to your lightbox files
         'captions': true, // enable captions - true or false*
@@ -257,7 +260,7 @@
                             let xhr = new XMLHttpRequest();
                             xhr.open('GET', filePath + 'captions.json');
                             xhr.send();
-                            xhr.onreadystatechange = function(e) {
+                            xhr.onload = function(e) {
                                 if (this.readyState == 4 && this.status == 200) {
                                     let foo = JSON.parse(e.currentTarget.response);
                                     let captiondiv = document.querySelector('.caption');
@@ -557,14 +560,10 @@
         if (Math.abs(diffX) > Math.abs(diffY)) { //sliding horizontally
             if (diffX > 35) {
                 //swipe left
-                $div.setAttribute('style', 'display:none');
-                n = true;
                 getPrevNxt(p = false, n = true);
             }
             else if (diffX < -35) {
                 //swipe right
-                $div.setAttribute('style', 'display:none');
-                p = true;
                 getPrevNxt(p = true, n = false);
             };
         }
