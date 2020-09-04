@@ -7,8 +7,6 @@
     //  USER OPTIONS
     //************************************************************************
     
-    //************************************************************************
-    //  USER OPTIONS
     const options = {
         'filePath' : "lightbox/", // directory path to your lightbox files
         'captions': true, // enable captions - true or false*
