@@ -1,3 +1,4 @@
+
     //************************************************************************
     // MIT License
     // Copyright (c) 2020 Nate Fazakerly 
@@ -5,8 +6,6 @@
     
     //************************************************************************
     //  USER OPTIONS
-    //************************************************************************
-    
     const options = {
         'filePath' : "lightbox/", // directory path to your lightbox files
         'captions': true, // enable captions - true or false*
@@ -202,8 +201,21 @@
         //*********************************************
         let match;
         let div = document.querySelector('.lightbox'); 
+        let ldr = document.querySelector('.loader-img');
         let srcc = target.getAttribute("src"); 
         let clickedImg = srcc.replace('/thumbs', '/fullsize');
+        //Show lightbox but only loader for now until img loads ...
+        //************************************************** 
+        div.setAttribute('style', 'display:inline-grid');
+        div.classList.add('fadein');
+        let descLtbx = div.getElementsByTagName('*');
+        let arrdescLtbx = Array.prototype.slice.call(descLtbx);
+        for(elem of arrdescLtbx){
+            if(elem !== ldr){
+                elem.setAttribute('style', 'display:none');
+            }
+        }
+        //************************************************** 
         try {
             for (let x in imgArray) { 
                 if (imgArray[x] == clickedImg) {
@@ -212,11 +224,14 @@
                     let img = document.querySelector('.lightbox img');
                     img.src = imgArray[x];
                     img.onload = () => {
-                        div.setAttribute('style', 'display:inline-grid');
-                        div.classList.add('fadein');
-                        let ldr = document.querySelector('.loader img');
-                        ldr.setAttribute('style', 'display:none')
-                        //*****************************************
+                        //reshow all lightbox elems but hide loader ...
+                        //************************************************** 
+                        for(elem of arrdescLtbx){
+                            if(elem !== ldr){
+                                elem.setAttribute('style', 'display:block');
+                            }  
+                        }
+                        //************************************************** 
                         document.body.setAttribute('style', 'overflow:hidden');
                         setTimeout(() => {
                             //**************************************
@@ -350,7 +365,7 @@
     };
 
     //ADD NAVIGATION LISTENERS...
-    let ltbx = document.querySelector('.lightbox'); 
+    let ltbx = document.querySelector('.lightbox');
     ltbx.onclick = (e) => {
         let prev = document.querySelector('.nav-prev-photo');
         let next = document.querySelector('.nav-next-photo');
@@ -399,9 +414,18 @@
     // SET UP PREV/NEXT IMAGE
     navLinks = () => {
         let ldr = document.querySelector('.loader-img');
-        ldr.setAttribute('style', 'display:block');
         let div = document.querySelector('.lightbox');
         let img = div.querySelector(".lightbox img");
+        //Hide all lightbox descendants except loader ...
+        //************************************************** 
+        let descLtbx = div.getElementsByTagName('*');
+        let arrdescLtbx = Array.prototype.slice.call(descLtbx);
+        for(elem of arrdescLtbx){
+            if(elem !== ldr){
+                elem.setAttribute('style', 'display:none');
+            }
+        }
+        //************************************************** 
         try {
             if (p) {
                 img.innerHTML = '';
@@ -412,6 +436,14 @@
                 img.src = imgArray[intNext];
             }
             img.onload = prevNext = () => {
+            //reshow all lightbox elems but hide loader ...
+            //************************************************** 
+            for(elem of arrdescLtbx){
+                if(elem !== ldr){
+                    elem.setAttribute('style', 'display:block');
+                }  
+            }
+            //************************************************** 
                 //********************************************
                 //          SLIDER ANIMATION 
                 //********************************************
