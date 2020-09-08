@@ -76,7 +76,7 @@
     //************************************************************************
     //          LOAD THUMBNAIL GALLERY
     //************************************************************************
-    function thumbs() {
+    thumbs = () => {
         //hide loader boxes if visible
         if (window.getComputedStyle(document.querySelector(".loader-captions")).getPropertyValue("display") != "none" ){
             document.querySelector('.loader-captions').setAttribute('style', 'display:none');
