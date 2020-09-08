@@ -182,6 +182,7 @@
     //************************************************************************
     //          SHOW INITIAL IMAGE
     //************************************************************************
+    var slowLoad = false;
     let gal = document.getElementById('gallery');
     gal.addEventListener('click', (e) => {
         let target = e.target;
@@ -192,6 +193,9 @@
         if(notLoaded){ //enable only after all thumbs loaded...
             return;
         }
+        let loadTest = setTimeout(() => { //check for slow image load time
+            slowLoad = true;
+        }, 300);
         //*********************************************
         //get current scroll position of window and set top of lightbox later
         pos = window.scrollY;
@@ -226,12 +230,17 @@
                     img.onload = () => {
                         //reshow all lightbox elems but hide loader ...
                         //************************************************** 
+                        clearTimeout(loadTest); //don't set slowLoad if image already loaded
                         for(elem of arrdescLtbx){
                             if(elem !== ldr){
                                 elem.setAttribute('style', 'display:block');
                             }  
                         }
-                        //************************************************** 
+                        //**************************************************
+                        if(!slowLoad){ //hide loader if normal connection...
+                            ldr.setAttribute('style', 'display:none');
+                        } 
+                        //**************************************************
                         document.body.setAttribute('style', 'overflow:hidden');
                         setTimeout(() => {
                             //**************************************
@@ -416,15 +425,18 @@
         let ldr = document.querySelector('.loader-img');
         let div = document.querySelector('.lightbox');
         let img = div.querySelector(".lightbox img");
-        //Hide all lightbox descendants except loader ...
+        //Hide all lightbox descendants except loader (if slowLoad) ...
         //************************************************** 
         let descLtbx = div.getElementsByTagName('*');
         let arrdescLtbx = Array.prototype.slice.call(descLtbx);
-        for(elem of arrdescLtbx){
-            if(elem !== ldr){
-                elem.setAttribute('style', 'display:none');
+        //show loader if first image loaded slowly (slow connection)
+        if(slowLoad){
+            for(elem of arrdescLtbx){
+                if(elem !== ldr){
+                    elem.setAttribute('style', 'display:none');
+                }
             }
-        }
+        } //comment
         //************************************************** 
         try {
             if (p) {
