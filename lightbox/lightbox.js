@@ -131,11 +131,10 @@
                             });
                             let loaders = document.querySelectorAll('.loader');
                             loaders.forEach((element) => {
-                                element.style.display = 'none';
-                                element.classList.add("fadeout");
+                                element.remove();
                             });
                             //set gallery height ...
-                            gal.setAttribute('style', 'height:' + h + 'px');
+                            gal.setAttribute('style', 'min-height:' + h + 'px');
                             //after loaders are gone, reset gallery height to auto ...
                             setTimeout(() => {
                                 gal.setAttribute('style', 'height:auto');
