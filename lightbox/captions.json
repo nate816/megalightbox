@@ -1,30 +1,62 @@
 {
-    "Caption 1": {
-        "Header": "Header (h3) for image #1.",
-        "Caption": "Caption (paragraph) for image #1. You can change these in captions.json, or change styles in lightbox.css."
+    "cat1": {
+        "Caption 1": {
+            "Caption 1": "Caption for image #1 in cat1. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 2": {
+            "Caption 2": "Caption for image #2 in cat1. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 3": {
+            "Caption 3": "Caption for image #3 in cat1. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 4": {
+            "Caption 4": "Caption for image #4 in cat1. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 5": {
+            "Caption 5": "Caption for image #5 in cat1. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 6": {
+            "Caption 6": "Caption for image #6 in cat1. You can change these in captions.json, or change styles in lightbox.css."
+        }
     },
-    "Caption 2": {
-        "Header": "Header (h3) for image #2.",
-        "Caption": "Caption (paragraph) for image #2. You can change these in captions.json, or change styles in lightbox.css."
+    "cat2": {
+        "Caption 1": {
+            "Caption 1": "Caption for image #1 in cat2. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 2": {
+            "Caption 2": "Caption for image #2 in cat2. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 3": {
+            "Caption 3": "Caption for image #3 in cat2. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 4": {
+            "Caption 4": "Caption for image #4 in cat2. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 5": {
+            "Caption 5": "Caption for image #5 in cat2. You can change these in captions.json, or change styles in lightbox.css."
+        }
     },
-    "Caption 3": {
-        "Header": "Header (h3) for image #3.",
-        "Caption": "Caption (paragraph) for image #3. You can change these in captions.json, or change styles in lightbox.css."
-    },
-    "Caption 4": {
-        "Header": "Header (h3) for image #4.",
-        "Caption": "Caption (paragraph) for image #4. You can change these in captions.json, or change styles in lightbox.css."
-    },
-    "Caption 5": {
-        "Header": "Header (h3) for image #5.",
-        "Caption": "Caption (paragraph) for image #5. You can change these in captions.json, or change styles in lightbox.css."
-    },
-    "Caption 6": {
-        "Header": "Header (h3) for image #6.",
-        "Caption": "Caption (paragraph) for image #6. You can change these in captions.json, or change styles in lightbox.css."
-    },
-    "Caption 7": {
-        "Header": "Header (h3) for image #7.",
-        "Caption": "Caption (paragraph) for image #7. You can change these in captions.json, or change styles in lightbox.css."
+    "cat3": {
+        "Caption 1": {
+            "Caption 1": "Caption for image #1 in cat3. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 2": {
+            "Caption 2": "Caption for image #2 in cat3. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 3": {
+            "Caption 3": "Caption for image #3 in cat3. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 4": {
+            "Caption 4": "Caption for image #4 in cat3. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 5": {
+            "Caption 5": "Caption for image #5 in cat3. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 6": {
+            "Caption 6": "Caption for image #6 in cat3. You can change these in captions.json, or change styles in lightbox.css."
+        },
+        "Caption 7": {
+            "Caption 7": "Caption for image #7 in cat3. You can change these in captions.json, or change styles in lightbox.css."
+        }
     }
 }

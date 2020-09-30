@@ -47,6 +47,23 @@
   .lightbox > div > img { box-shadow: 0 2px 20px black; object-fit: cover; max-width:100%; max-height:70vh; height:auto;  }
 
   .img-wrap { z-index:6; }
+
+   /* back to top: */
+
+   #top {  display:none; position:fixed; bottom:-5px; right:20px; background: rgba(0,0,0,0.6); border-radius:5px; cursor:pointer; z-index:10; }
+   #top a { padding:2px 5px; }
+
+   /* ==========================================================================
+            SORTING
+   ========================================================================== */
+
+   .sorting ul { padding:0; margin-left:-10px; }
+   .sorting ul li { display:inline-block; line-height:2; }
+   .sorting ul li a { padding:10px; text-transform: uppercase; color:white; }
+   
+   .inactive { text-decoration:none; color:white; }
+   .active { text-decoration:underline; color:#FFA000 !important; }
+   .warn { padding-top:40px; border-top:1px solid #999999;}
    
    /* ==========================================================================
                LIGHTBOX NAVIGATION

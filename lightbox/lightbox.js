@@ -10,7 +10,7 @@
         'filePath' : "lightbox/", // directory path to your lightbox files
         'captions': true, // enable captions - true or false*
         // * use captions.json to edit captions
-        'loadTime': 1000, // in milliseconds - minimum time period loader boxes 
+        'loadTime': 1500, // in milliseconds - minimum time period loader boxes 
         // are shown
         'rollover': "zoom", //thumbnail hover animation*
         //* zoom, slide, drop, or none.
@@ -25,7 +25,8 @@
     //************************************************************************
 
     var resizeDone, captionsLoaded = false, imgCount;
-    var notLoaded = true;
+    var notLoaded = true, type = "all", nav = false;
+    var type = "all"; //for thumb sorting
 
     window.addEventListener('resize', () => {
         clearTimeout(resizeDone),
@@ -38,6 +39,42 @@
     });
 
     //************************************************************************
+    //          BACK TO TOP 
+    //************************************************************************
+
+    window.addEventListener('scroll', () => {
+        checkTop();
+    });
+
+    checkTop = () => {
+        let pos = window.scrollY;
+        let top = document.getElementById('top');
+        if (pos >= 900){
+            top.style.display = 'block';
+            top.addEventListener('click', () => {
+                window.scrollTo(0, 0);
+            });
+        }
+        else {
+            top.style.display = 'none';
+        }
+    }
+    
+    checkTop();
+
+    //************************************************************************
+    //          Sorting Directories
+    //************************************************************************
+
+    const sorts = Array.from(document.querySelectorAll('.sorting ul li a'));
+    let dirs = [];
+    sorts.forEach((element) => {
+        if(element.innerHTML !== 'all'){
+            dirs.push(element.innerHTML)
+        } 
+    });
+
+    //************************************************************************
     //          Load captions from captions.json ...
     //************************************************************************
 
@@ -45,52 +82,70 @@
         //SHOW CAPTIONS LOADER...
         document.querySelector('.loader-captions').style.display = 'block';
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', filePath + 'captions.php');
+        xhr.open('GET', filePath + 'captions.php?dirs=' + dirs);
         xhr.send();
         xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 captionsLoaded = true;
             }
         };
-    }
+    };
 
     //************************************************************************
     //          FORM IMAGE ARRAY FROM /fullsize/ FOLDER IMAGES
     //************************************************************************
-
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', filePath + 'full.php?filePath=' + filePath);
-    xhr.send(); 
-    xhr.onreadystatechange = function(e){
-        if (this.readyState == 4 && this.status == 200) {
-            imgArray = JSON.parse(e.currentTarget.response);
-            imgCount = imgArray.length;
-            for (x = 0; x <= imgCount - 1; x++) {
-                //load dummy images into relative gallery div
-                let gal = document.querySelector('#gallery');
-                gal.insertAdjacentHTML('beforeend', '<div class="loader"><img src="' + filePath + 'images/image-dummy.png" class="fadeRight" alt=""/></div>');
+    
+    let getImages = (e) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', filePath + 'full.php?filePath=' + filePath + '&type=' + type + '&dirs=' + dirs);
+        xhr.send(); 
+        xhr.onreadystatechange = function(e){
+            if (this.readyState == 4 && this.status == 200) {
+                imgArray = JSON.parse(e.currentTarget.response);
+                imgCount = imgArray.length;
+                for (x = 0; x <= imgCount - 1; x++) {
+                    //load dummy images into relative gallery div
+                    let gal = document.querySelector('#gallery');
+                    gal.insertAdjacentHTML('beforeend', '<div class="loader"><img src="' + filePath + 'images/image-dummy.png" class="fadeRight" alt=""/></div>');
+                };
+                loadThumbs(type);
             }
-            thumbs();
-        }
-    };
+        };
+    }
+
+    getImages();
+
     //************************************************************************
     //          LOAD THUMBNAIL GALLERY
     //************************************************************************
-    thumbs = () => {
-        //hide loader boxes if visible
+
+    loadThumbs = (type) => {
+        notLoaded = true; //disallow sorting until thumbs are loaded...
+        //CLEAR FOR SORTING...
+        const warn = document.querySelector('.warn');
+        warn.innerHTML = '';
+        const thms = document.querySelectorAll('.thumb');
+        if (thms.length > 0){
+            let nodes = Array.from(thms);
+            nodes.forEach((element) => {
+                element.parentNode.removeChild(element);
+            });
+        };
+        //hide captions loader if visible
         if (window.getComputedStyle(document.querySelector(".loader-captions")).getPropertyValue("display") != "none" ){
             document.querySelector('.loader-captions').setAttribute('style', 'display:none');
         };
         try {
             let xhr = new XMLHttpRequest();
-            xhr.open('GET', filePath + 'thumbs.php?filePath=' + filePath + '&imgCount=' + imgCount + '&fArray=' + imgArray);
-            xhr.send(); 
+            xhr.open('POST', filePath + 'thumbs.php', true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.send('filePath=' + filePath + '&imgCount=' + imgCount + '&fArray=' + imgArray + '&type=' + type); 
             xhr.onreadystatechange = function(e){
                 if (this.readyState == 4 && this.status == 200) {
                     thumbArray = JSON.parse(e.currentTarget.response);
                     let gal = document.getElementById('gallery');
                     for (x = 0; x <= thumbArray.length - 1; x++) {
-                        gal.insertAdjacentHTML('beforeend', '<div class="thumb"><a href="#"><img src="' + thumbArray[x] + '" /></a></div>');
+                        gal.insertAdjacentHTML('beforeEnd', '<div class="thumb"><a href="#"><img src="' + thumbArray[x] + '" /></a></div>');
                     };
                     let thumbs = document.querySelectorAll(".thumb img");
                     // wait until last thumb is loaded...
@@ -98,36 +153,56 @@
                     thumbs.forEach((el, index) => {
                         if(index == thumbs.length - 1){
                             lastThumb = thumbs[thumbs.length - 1];
-                        }
-                    })
+                        };
+                    });
                     if(typeof lastThumb === "undefined"){
-                        alert('Looks like you uploaded new photos. Please clear the browser cache and you should be good to go.');
+                        warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any memories from ' + type + '. Sad!</h3>');
+                        const ldr = document.querySelectorAll('.loader');
+                        if (ldr.length > 0){
+                            let nodes = Array.from(ldr);
+                            nodes.forEach((element) => {
+                                element.parentNode.removeChild(element);
+                            });
+                        };
+                        //RE-ENABLE SORTING CURSORS:
+                        for(let el of sorts){
+                            el.setAttribute('style', 'cursor:pointer; opacity:1;')
+                        }
+                        notLoaded = false;
                         return;
                     };
                     //************************************
                     lastThumb.addEventListener("load", () => {
                         //********************************************
                         //          VERTICAL/BIG THUMB HANDLING 
-                        //******************************************** 
+                        //********************************************
+                        let n = 0; 
+                        let num = 8;
                         for(let i of thumbs){
-                            let real_width = i.naturalWidth;
-                            let real_height = i.naturalHeight;
-                            if (real_height > real_width) {
-                                i.closest('div').classList.add("vertical");
-                            };
+                            if(imgCount > 35){
+                                //Every numth image spans 2 rows & columns
+                                n++;
+                                if(n % num === 0){
+                                    i.closest('div').classList.add("big");
+                                }
+                            }
+                            else {
+                                let real_width = i.naturalWidth;
+                                let real_height = i.naturalHeight;
+                                if (real_height > real_width) {
+                                    i.closest('div').classList.add("vertical");
+                                };
+                            }
                         };
                         //**************************************************   
                         //*** GET HEIGHT OF GALLERY */
                         let h = gal.clientHeight;
                         //**************************************************
                         setTimeout(function () { //show loaders
-                            let thumbs = document.querySelectorAll('.thumb');
-                            let delay = 30;
-                            thumbs.forEach((element, index) => {
-                                setTimeout(() => {
-                                    element.style.display = 'block';
-                                    element.classList.add("fadein");
-                                }, delay*index);
+                            let thumbs = document.querySelectorAll(".thumb");
+                            thumbs.forEach((element) => {
+                                element.style.display = 'block';
+                                element.classList.add("fadein");
                             });
                             let loaders = document.querySelectorAll('.loader');
                             loaders.forEach((element) => {
@@ -135,11 +210,13 @@
                             });
                             //set gallery height ...
                             gal.setAttribute('style', 'min-height:' + h + 'px');
-                            //after loaders are gone, reset gallery height to auto ...
-                            setTimeout(() => {
-                                gal.setAttribute('style', 'height:auto');
-                                notLoaded = false;  //enable gallery click event
-                            }, delay*thumbs.length);
+                            //after loaders are gone, reset gallery height to auto, set cursors, etc ...    
+                            gal.setAttribute('style', 'height:auto');
+                            //RE-ENABLE SORTING CURSORS:
+                            for(let el of sorts){
+                                el.setAttribute('style', 'cursor:pointer; opacity:1;')
+                            }
+                            notLoaded = false;  //enable gallery/sorting click event
                             //********************************************
                             //          THUMBNAIL ROLLOVERS 
                             //********************************************
@@ -178,6 +255,42 @@
         };
     };
 
+    let all = document.querySelector('.all');
+    all.classList.add('active');
+
+    //************************************************************************
+    //          SORTING
+    //************************************************************************
+    let sort = document.querySelector('.sorting');
+    sort.addEventListener('click', (e) => {
+        // if target is not a sorting A tag, get out of callback.
+        if(e.target.tagName !== 'A' || notLoaded){
+            return;
+        }
+        let all = document.querySelector('.all');
+        let sortLinks = sort.getElementsByTagName("a");
+        for (let el of sortLinks){
+            //DISABLE SORTING CURSORS during load:
+            el.setAttribute('style', 'cursor:wait; opacity:0.3;')
+            el.classList.remove('active');
+            if (e.target == el && e.target != all){
+                sorting = true;
+                type = el.innerHTML;
+                //set active state:
+                el.classList.add('active');
+            }
+            else if (e.target == all) { //all
+                sorting = true;
+                type = "all";
+                //set active state:
+                all.classList.add('active');
+            }
+        }
+        if(sorting) {
+            getImages();
+                return;
+        };
+    });
     //************************************************************************
     //          SHOW INITIAL IMAGE
     //************************************************************************
@@ -185,8 +298,10 @@
     let gal = document.getElementById('gallery');
     gal.addEventListener('click', (e) => {
         let target = e.target;
-        // if target is not the thumbnail image, get out to avoid typeError.
-        if(target.getAttribute("src") == null){
+
+        //************************************************************************
+        // if target is not a thumbnail img or sorting link, get out to avoid typeError.
+        if(target.tagName !== 'IMG'){
             return;
         }
         if(notLoaded){ //enable only after all thumbs loaded...
@@ -194,7 +309,7 @@
         }
         let loadTest = setTimeout(() => { //check for slow image load time
             slowLoad = true;
-        }, 300);
+        }, 100);
         //*********************************************
         //get current scroll position of window and set top of lightbox later
         pos = window.scrollY;
@@ -220,7 +335,7 @@
         }
         //************************************************** 
         try {
-            for (let x in imgArray) { 
+            for (x=0; x<imgArray.length; x++) { 
                 if (imgArray[x] == clickedImg) {
                     match = true;
                     // set lightbox image source to the fullsize image:
@@ -277,35 +392,17 @@
                     let $index = x;
                     if(captions){
                         if (captionsLoaded) {
-                            //the captions.json has been created or gotten...
-                            let xhr = new XMLHttpRequest();
-                            xhr.open('GET', filePath + 'captions.json');
-                            xhr.send();
-                            xhr.onload = function(e) {
-                                if (this.readyState == 4 && this.status == 200) {
-                                    let foo = JSON.parse(e.currentTarget.response);
-                                    let captiondiv = document.querySelector('.caption');
-                                    Object.entries(foo).forEach((item, index) => {
-                                        if (index == $index){
-                                            let $header = item[1].Header;
-                                            let $caption = item[1].Caption;
-                                            captiondiv.innerHTML = '';
-                                            captiondiv.insertAdjacentHTML('beforeend', '<h3>' + $header + '</h3');
-                                            captiondiv.insertAdjacentHTML('beforeend', '<p>' + $caption + '</p>');
-                                        };
-                                    });
-                                    xhr.abort();
-                                }
-                            }
+                            nav = false;
+                            loadCaptions($index);
                         }
                         else { //captionsLoaded is false so something went wrong
                             console.log('There was a problem loading the captions. Try clearing the browser cache and refreshing.')
-                        }
+                        };
                     }
                     //*******************************************
                     break;
                 }
-                else {
+                {
                     match = false;
                 };
             };
@@ -328,6 +425,66 @@
             return;
         };
     });
+
+    //************************************************************************
+    //          LOAD CAPTIONS   
+    //************************************************************************
+
+    let loadCaptions = ($index) => {
+        //the captions.json has been created or gotten...
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', filePath + 'captions.json');
+        xhr.send();
+        xhr.onload = function(e) {
+            if (this.readyState == 4 && this.status == 200) {
+                let foo = JSON.parse(e.currentTarget.response);
+                let captiondiv = document.querySelector('.caption');
+                if(type != 'all'){ // sorting so...
+                    for (const [key, value] of Object.entries(foo)) {
+                        if(key === type){ //years match
+                            if(nav){ //prev/next
+                                if(p){
+                                    $index = intPrev;
+                                }
+                                else if (n) {
+                                    $index = intNext;
+                                }
+                            }     
+                            Object.values(value).forEach((item, index) => {
+                                if( index === $index ){ //captions match image
+                                    let $caption = Object.values(item);
+                                    captiondiv.innerHTML = ''; 
+                                    captiondiv.insertAdjacentHTML('beforeend', '<p>' + $caption + '</p>');
+                                }
+                            }); 
+                        }
+                    }
+                }
+                else { // ALL category
+                    if(nav){ //prev/next
+                        if(p){
+                            $index = intPrev;
+                        }
+                        else if (n) {
+                            $index = intNext;
+                        }
+                    }                    
+                    let x = -1;
+                    for (const [key, value] of Object.entries(foo)) {
+                        for(const item of Object.values(value)) {
+                            x++; //tracks each caption object without resetting on year
+                            if( x === $index ){ //captions match image
+                                let $caption = Object.values(item);
+                                captiondiv.innerHTML = '';
+                                captiondiv.insertAdjacentHTML('beforeend', '<p>' + $caption + '</p>');
+                                break;
+                            }
+                        }  
+                    }
+                }
+            }
+        }
+    }
 
     //************************************************************************
     //          CLOSING THE IMAGE
@@ -365,14 +522,14 @@
 
     // HANDLE NAVIGATION BUTTONS & CLOSE    
     setNav = () => {
-        let w = document.querySelector('.lightbox img').width - 10;
+        let w = window.innerWidth - 25;
         let lnav = document.querySelector('.lightbox-nav');
         let close = document.querySelector('.closeP');
         lnav.setAttribute('style', 'display:block; margin-left:' + -w/2 + 'px; width:' + w + 'px' );
         close.setAttribute('style', 'display:block; margin-left:' + -w/2 + 'px; width:' + w + 'px' );
     };
 
-    //ADD NAVIGATION LISTENERS...
+    //ADD NAVIGATION LISTENERS...P
     let ltbx = document.querySelector('.lightbox');
     ltbx.onclick = (e) => {
         let prev = document.querySelector('.nav-prev-photo');
@@ -411,7 +568,7 @@
                     navLinks(intPrev = x - 1, intNext = 0, p, n);
                     return;
                 }
-                else {
+                {
                     navLinks(intPrev = x - 1, intNext = x + 1, p, n);
                     return;
                 }
@@ -435,7 +592,7 @@
                     elem.setAttribute('style', 'display:none');
                 }
             }
-        } //comment
+        }
         //************************************************** 
         try {
             if (p) {
@@ -486,29 +643,12 @@
                 //SHOW CAPTION ******************************
                 if (captions){
                     if (captionsLoaded) {
-                        let xhr2 = new XMLHttpRequest();
-                        xhr2.open('GET', filePath + 'captions.json');
-                        xhr2.send();
-                        xhr2.onreadystatechange = function(e) {
-                            if (this.readyState == 4 && this.status == 200) {
-                                let bar = JSON.parse(e.currentTarget.response);
-                                let captiondiv = document.querySelector('.caption');
-                                Object.entries(bar).forEach((item, index) => {
-                                    if ((p && (index == intPrev)) || (n && (index == intNext))) {
-                                        let $header = item[1].Header;
-                                        let $caption = item[1].Caption;
-                                        captiondiv.innerHTML = '';
-                                        captiondiv.insertAdjacentHTML('beforeend', '<h3>' + $header + '</h3');
-                                        captiondiv.insertAdjacentHTML('beforeend', '<p>' + $caption + '</p>');
-                                    };
-                                });
-                                xhr2.abort();
-                            }
-                        }
+                        nav = true;
+                        loadCaptions();
                     }
-                    else {
-                        console.log('There was a problem loading the captions. Try deleting captions.json and reloading the web page.')
-                    }
+                    else { //captionsLoaded is false so something went wrong
+                        console.log('There was a problem loading the captions. Try clearing the browser cache and refreshing.')
+                    };
                 }
             };
         } catch (err) {
@@ -608,7 +748,7 @@
                 getPrevNxt(p = true, n = false);
             };
         }
-        else { //sliding vertically
+        { //sliding vertically
             if ($div.classList.contains("swipeLeft")) {
                 $div.classList.remove("swipeLeft");
             };
