@@ -263,7 +263,7 @@
     //************************************************************************
     let sort = document.querySelector('.sorting');
     sort.addEventListener('click', (e) => {
-        // if target is not a sorting A tag, get out of callback.
+        // if target is not a sorting A tag or thumbs not loaded, get out of callback.
         if(e.target.tagName !== 'A' || notLoaded){
             return;
         }
