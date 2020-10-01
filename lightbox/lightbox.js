@@ -1,4 +1,3 @@
-
     //************************************************************************
     // MIT License
     // Copyright (c) 2020 Nate Fazakerly 
@@ -8,24 +7,25 @@
     //  USER OPTIONS
     const options = {
         'filePath' : "lightbox/", // directory path to your lightbox files
-        'captions': true, // enable captions - true or false*
-        // * use captions.json to edit captions
-        'loadTime': 1500, // in milliseconds - minimum time period loader boxes 
+        'captions': true, // enable/disable captions*
+        // * use captions.xml to edit captions
+        'filters' : true, // enable/disable category filters
+        'loadTime': 1000, // in milliseconds - minimum time period loader boxes 
         // are shown
-        'rollover': "zoom", //thumbnail hover animation*
+        'rollover': "zoom", //thumbnail hover animations*
         //* zoom, slide, drop, or none.
         'slider': "slide" //lightbox slider animation*
-        //* zoom, slide, or none.                   
+        //* zoom, slide, or none.               
     }
 
     Object.freeze(options);
 
-    const { filePath, captions, loadTime, rollover, slider } = options;
+    const { filePath, captions, filters, loadTime, rollover, slider } = options;
 
     //************************************************************************
 
     var resizeDone, captionsLoaded = false, imgCount;
-    var notLoaded = true, type = "all", nav = false;
+    var notLoaded = true, nav = false;
     var type = "all"; //for thumb sorting
 
     window.addEventListener('resize', () => {
@@ -66,13 +66,21 @@
     //          Sorting Directories
     //************************************************************************
 
-    const sorts = Array.from(document.querySelectorAll('.sorting ul li a'));
-    let dirs = [];
-    sorts.forEach((element) => {
-        if(element.innerHTML !== 'all'){
-            dirs.push(element.innerHTML)
-        } 
-    });
+    //hide filters if needed
+    if (!filters) {
+        let sorts = document.querySelector('.sorting');
+        sorts.style.display = 'none';
+        //var dirs = null;
+    }
+    else { //filters
+        var sorts = Array.from(document.querySelectorAll('.sorting ul li a'));
+        var dirs = [];
+        sorts.forEach((element) => {
+            if(element.innerHTML !== 'all'){
+                dirs.push(element.innerHTML)
+            } 
+        });
+    }
 
     //************************************************************************
     //          Load captions from captions.json ...
@@ -82,7 +90,12 @@
         //SHOW CAPTIONS LOADER...
         document.querySelector('.loader-captions').style.display = 'block';
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', filePath + 'captions.php?dirs=' + dirs);
+        if(filters){
+            xhr.open('GET', filePath + 'captions.php?dirs=' + dirs);
+        }
+        else {
+            xhr.open('GET', filePath + 'captions.php?');
+        }
         xhr.send();
         xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -97,7 +110,12 @@
     
     let getImages = (e) => {
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', filePath + 'full.php?filePath=' + filePath + '&type=' + type + '&dirs=' + dirs);
+        if(filters){
+            xhr.open('GET', filePath + 'full.php?filePath=' + filePath + '&type=' + type + '&dirs=' + dirs);
+        }
+        else { //no filters
+            xhr.open('GET', filePath + 'full.php?filePath=' + filePath + '&type=' + type);
+        }
         xhr.send(); 
         xhr.onreadystatechange = function(e){
             if (this.readyState == 4 && this.status == 200) {
@@ -139,7 +157,13 @@
             let xhr = new XMLHttpRequest();
             xhr.open('POST', filePath + 'thumbs.php', true);
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhr.send('filePath=' + filePath + '&imgCount=' + imgCount + '&fArray=' + imgArray + '&type=' + type); 
+            if (filters){
+                xhr.send('filePath=' + filePath + '&imgCount=' + imgCount + '&fArray=' + imgArray + '&type=' + type + '&dirs=' + dirs); 
+            }
+            else {
+                xhr.send('filePath=' + filePath + '&imgCount=' + imgCount + '&fArray=' + imgArray + '&type=' + type); 
+            }
+
             xhr.onreadystatechange = function(e){
                 if (this.readyState == 4 && this.status == 200) {
                     thumbArray = JSON.parse(e.currentTarget.response);
@@ -165,8 +189,10 @@
                             });
                         };
                         //RE-ENABLE SORTING CURSORS:
-                        for(let el of sorts){
-                            el.setAttribute('style', 'cursor:pointer; opacity:1;')
+                        if(filters){
+                            for(let el of sorts){
+                                el.setAttribute('style', 'cursor:pointer; opacity:1;')
+                            }
                         }
                         notLoaded = false;
                         return;
@@ -213,8 +239,10 @@
                             //after loaders are gone, reset gallery height to auto, set cursors, etc ...    
                             gal.setAttribute('style', 'height:auto');
                             //RE-ENABLE SORTING CURSORS:
-                            for(let el of sorts){
-                                el.setAttribute('style', 'cursor:pointer; opacity:1;')
+                            if(filters){
+                                for(let el of sorts){
+                                    el.setAttribute('style', 'cursor:pointer; opacity:1;')
+                                }
                             }
                             notLoaded = false;  //enable gallery/sorting click event
                             //********************************************
@@ -261,36 +289,40 @@
     //************************************************************************
     //          SORTING
     //************************************************************************
-    let sort = document.querySelector('.sorting');
-    sort.addEventListener('click', (e) => {
-        // if target is not a sorting A tag or thumbs not loaded, get out of callback.
-        if(e.target.tagName !== 'A' || notLoaded){
-            return;
-        }
-        let all = document.querySelector('.all');
-        let sortLinks = sort.getElementsByTagName("a");
-        for (let el of sortLinks){
-            //DISABLE SORTING CURSORS during load:
-            el.setAttribute('style', 'cursor:wait; opacity:0.3;')
-            el.classList.remove('active');
-            if (e.target == el && e.target != all){
-                sorting = true;
-                type = el.innerHTML;
-                //set active state:
-                el.classList.add('active');
-            }
-            else if (e.target == all) { //all
-                sorting = true;
-                type = "all";
-                //set active state:
-                all.classList.add('active');
-            }
-        }
-        if(sorting) {
-            getImages();
+
+    if (filters){
+        let sort = document.querySelector('.sorting');
+        sort.addEventListener('click', (e) => {
+            // if target is not a sorting A tag or thumbs not loaded, get out of callback. 
+            if(e.target.tagName !== 'A' || notLoaded){
                 return;
-        };
-    });
+            }
+            let all = document.querySelector('.all');
+            let sortLinks = sort.getElementsByTagName("a");
+            for (let el of sortLinks){
+                //DISABLE SORTING CURSORS during load:
+                el.setAttribute('style', 'cursor:wait; opacity:0.3;')
+                el.classList.remove('active');
+                if (e.target == el && e.target != all){
+                    sorting = true;
+                    type = el.innerHTML;
+                    //set active state:
+                    el.classList.add('active');
+                }
+                else if (e.target == all) { //all
+                    sorting = true;
+                    type = "all";
+                    //set active state:
+                    all.classList.add('active');
+                }
+            }
+            if(sorting) {
+                getImages();
+                    return;
+            };
+        });
+    }
+    
     //************************************************************************
     //          SHOW INITIAL IMAGE
     //************************************************************************
@@ -460,7 +492,7 @@
                         }
                     }
                 }
-                else { // ALL category
+                else { // ALL category OR no filters
                     if(nav){ //prev/next
                         if(p){
                             $index = intPrev;
@@ -473,8 +505,19 @@
                     for (const [key, value] of Object.entries(foo)) {
                         for(const item of Object.values(value)) {
                             x++; //tracks each caption object without resetting on year
+                            let $caption;
                             if( x === $index ){ //captions match image
-                                let $caption = Object.values(item);
+                                if(filters){
+                                    $caption = Object.values(item);
+                                }
+                                else { //no filters
+                                    if(typeof(item) === 'object'){
+                                        $caption = Object.values(item);
+                                    }
+                                    else{ //string (user nds to change captions format)
+                                        $caption = item;
+                                    }
+                                }
                                 captiondiv.innerHTML = '';
                                 captiondiv.insertAdjacentHTML('beforeend', '<p>' + $caption + '</p>');
                                 break;

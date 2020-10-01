@@ -6,6 +6,14 @@ $tCount = 0;
 $fArray = $_POST['fArray'];
 $type = $_POST['type'];
 
+//check for filters
+if (isset($_POST['dirs'])){
+    $filters = true;
+}
+else {
+    $filters = false;
+}
+
 $fullsizeArray = explode(',', $fArray);
 
 $noadd = false;
@@ -19,13 +27,24 @@ else {
     $type = $type;
 }
 
-foreach (array_filter(glob('images/thumbs/' . $type . '/*'), 'is_file') as $data)
+//filters
+if($filters){
+    $thumbsPath = 'images/thumbs/' . $type . '/*';
+    $fullPath = 'images/fullsize/' . $type . '/*';
+}
+else {
+    $thumbsPath = 'images/thumbs/' . $type;
+    $fullPath = 'images/fullsize/' . $type;
+}
+
+
+foreach (array_filter(glob($thumbsPath), 'is_file') as $data)
 {
     $tCount += 1;
 }
 
 if($tCount > $fCount) {
-    foreach (array_filter(glob('images/thumbs/' . $type . '/*'), 'is_file') as $data) //loop thru thumbnails
+    foreach (array_filter(glob($thumbsPath), 'is_file') as $data) //loop thru thumbnails
     {
         $data =  str_replace('thumbs', 'fullsize', $data); // change thumbs to fullsize in the index of fullsize array to check for match
         // $match = $fullsizeArray[$index];
@@ -46,7 +65,7 @@ if($tCount > $fCount) {
 
 
 elseif($tCount < $fCount){ //need to create thumbs
-    foreach (array_filter(glob('images/fullsize/' . $type . '/*'), 'is_file') as $data)
+    foreach (array_filter(glob($fullPath), 'is_file') as $data)
         {
             //scales/rotates/saves full size image to thumb from source image
             correctImageOrientation($data);
@@ -58,7 +77,7 @@ elseif($tCount < $fCount){ //need to create thumbs
 }
 
 else { //all equal
-    foreach (array_filter(glob('images/thumbs/' . $type . '/*'), 'is_file') as $data) {
+    foreach (array_filter(glob($thumbsPath), 'is_file') as $data) {
         array_push($thumbArray, $filePath . $data);
     }
 }
