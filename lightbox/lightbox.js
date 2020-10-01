@@ -9,7 +9,7 @@
         'filePath' : "lightbox/", // directory path to your lightbox files
         'captions': true, // enable/disable captions*
         // * use captions.xml to edit captions
-        'filters' : false, // enable/disable category filters
+        'filters' : true, // enable/disable category filters
         'loadTime': 1000, // in milliseconds - minimum time period loader boxes 
         // are shown
         'rollover': "zoom", //thumbnail hover animations*
@@ -186,7 +186,9 @@
                         };
                     });
                     if(typeof lastThumb === "undefined"){
-                        warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any memories from ' + type + '. Sad!</h3>');
+                        if(filters){
+                            warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any images in the ' + type + '. category!</h3>');
+                        }
                         const ldr = document.querySelectorAll('.loader');
                         if (ldr.length > 0){
                             let nodes = Array.from(ldr);
