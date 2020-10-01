@@ -9,7 +9,7 @@
         'filePath' : "lightbox/", // directory path to your lightbox files
         'captions': true, // enable/disable captions*
         // * use captions.xml to edit captions
-        'filters' : true, // enable/disable category filters
+        'filters' : false, // enable/disable category filters
         'loadTime': 1000, // in milliseconds - minimum time period loader boxes 
         // are shown
         'rollover': "zoom", //thumbnail hover animations*
@@ -69,7 +69,9 @@
     //hide filters if needed
     if (!filters) {
         let sorts = document.querySelector('.sorting');
-        sorts.style.display = 'none';
+        if ( sorts !== null){
+            sorts.style.display = 'none';
+        }
         //var dirs = null;
     }
     else { //filters
@@ -140,8 +142,12 @@
     loadThumbs = (type) => {
         notLoaded = true; //disallow sorting until thumbs are loaded...
         //CLEAR FOR SORTING...
-        const warn = document.querySelector('.warn');
-        warn.innerHTML = '';
+        if(filters){
+            const warn = document.querySelector('.warn');
+            if( warn !== null){
+                warn.innerHTML = '';
+            }
+        }
         const thms = document.querySelectorAll('.thumb');
         if (thms.length > 0){
             let nodes = Array.from(thms);
@@ -283,8 +289,10 @@
         };
     };
 
-    let all = document.querySelector('.all');
-    all.classList.add('active');
+    if (filters){
+        let all = document.querySelector('.all');
+        all.classList.add('active');
+    }
 
     //************************************************************************
     //          SORTING
