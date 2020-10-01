@@ -187,7 +187,14 @@
                     });
                     if(typeof lastThumb === "undefined"){
                         if(filters){
-                            warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any images in the ' + type + '. category!</h3>');
+                            let warn = document.querySelector('.warn');
+                            console.log(typeof warn);
+                            if (warn !== null) {
+                                warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any images in the ' + type + '. category!</h3>');
+                            }
+                            else {
+                                console.log('Doesnt look like we have any images in the ' + type + '. category.')
+                            }
                         }
                         const ldr = document.querySelectorAll('.loader');
                         if (ldr.length > 0){
@@ -291,46 +298,39 @@
         };
     };
 
-    if (filters){
-        let all = document.querySelector('.all');
-        all.classList.add('active');
-    }
-
     //************************************************************************
     //          SORTING
     //************************************************************************
 
     if (filters){
         let sort = document.querySelector('.sorting');
-        sort.addEventListener('click', (e) => {
-            // if target is not a sorting A tag or thumbs not loaded, get out of callback. 
-            if(e.target.tagName !== 'A' || notLoaded){
-                return;
-            }
-            let all = document.querySelector('.all');
-            let sortLinks = sort.getElementsByTagName("a");
-            for (let el of sortLinks){
-                //DISABLE SORTING CURSORS during load:
-                el.setAttribute('style', 'cursor:wait; opacity:0.3;')
-                el.classList.remove('active');
-                if (e.target == el && e.target != all){
-                    sorting = true;
-                    type = el.innerHTML;
-                    //set active state:
-                    el.classList.add('active');
-                }
-                else if (e.target == all) { //all
-                    sorting = true;
-                    type = "all";
-                    //set active state:
-                    all.classList.add('active');
-                }
-            }
-            if(sorting) {
-                getImages();
+        if (sort === null){
+            console.log('The sorting div element is missing...did you delete from the index.html?')
+        }
+        else{ //sort valid
+            sort.addEventListener('click', (e) => {
+                // if target is not a sorting A tag or thumbs not loaded, get out of callback. 
+                if(e.target.tagName !== 'A' || notLoaded){
                     return;
-            };
-        });
+                }
+                let sortLinks = sort.getElementsByTagName("a");
+                for (let el of sortLinks){
+                    //DISABLE SORTING CURSORS during load:
+                    el.setAttribute('style', 'cursor:wait; opacity:0.3;')
+                    el.classList.remove('active');
+                    if (e.target == el){
+                        sorting = true;
+                        type = el.innerHTML;
+                        //set active state:
+                        el.classList.add('active');
+                    }
+                }
+                if(sorting) {
+                    getImages();
+                        return;
+                };
+            });
+        }
     }
     
     //************************************************************************

@@ -60,6 +60,7 @@
    .sorting ul { padding:0; margin-left:-10px; }
    .sorting ul li { display:inline-block; line-height:2; }
    .sorting ul li a { padding:10px; text-transform: uppercase; color:white; }
+   .sorting ul li a:hover { color:#FFA000; }
    
    .inactive { text-decoration:none; color:white; }
    .active { text-decoration:underline; color:#FFA000 !important; }
