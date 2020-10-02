@@ -217,23 +217,12 @@
                         //********************************************
                         //          VERTICAL/BIG THUMB HANDLING 
                         //********************************************
-                        let n = 0; 
-                        let num = 8;
                         for(let i of thumbs){
-                            if(imgCount > 35){
-                                //Every numth image spans 2 rows & columns
-                                n++;
-                                if(n % num === 0){
-                                    i.closest('div').classList.add("big");
-                                }
-                            }
-                            else {
-                                let real_width = i.naturalWidth;
-                                let real_height = i.naturalHeight;
-                                if (real_height > real_width) {
-                                    i.closest('div').classList.add("vertical");
-                                };
-                            }
+                            let real_width = i.naturalWidth;
+                            let real_height = i.naturalHeight;
+                            if (real_height > real_width) {
+                                i.closest('div').classList.add("vertical");
+                            };
                         };
                         //**************************************************   
                         //*** GET HEIGHT OF GALLERY */
