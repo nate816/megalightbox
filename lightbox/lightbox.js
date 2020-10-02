@@ -374,17 +374,19 @@
                     img.src = imgArray[x];
                     img.onload = () => {
                         //reshow all lightbox elems but hide loader ...
+                        //& HIDE CAPTION IF NO CAPTIONS...
                         //************************************************** 
                         clearTimeout(loadTest); //don't set slowLoad if image already loaded
-                        for(elem of arrdescLtbx){
+                        for(elem of arrdescLtbx){                           
                             if(elem !== ldr){
-                                elem.setAttribute('style', 'display:block');
-                            }  
+                                elem.setAttribute('style', 'display:block;');
+                            }                
+                            if(!captions){
+                                if(elem === captiondiv){
+                                    elem.setAttribute('style', 'display:none;');
+                                }
+                            }                  
                         }
-                        //**************************************************
-                        if(!slowLoad){ //hide loader if normal connection...
-                            ldr.setAttribute('style', 'display:none');
-                        } 
                         //**************************************************
                         document.body.setAttribute('style', 'overflow:hidden');
                         setTimeout(() => {
