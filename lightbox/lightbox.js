@@ -6,8 +6,8 @@
     //************************************************************************
     //  USER OPTIONS
     const options = {
-        'filePath' : "lightbox/", // directory path to your lightbox files
-        'captions': true, // enable/disable captions*
+        'filePath' : "../lightbox/", // directory path to your lightbox files
+        'captions': false, // enable/disable captions*
         // * use captions.xml to edit captions
         'filters' : true, // enable/disable category filters
         'loadTime': 1000, // in milliseconds - minimum time period loader boxes 
@@ -126,7 +126,7 @@
                 for (x = 0; x <= imgCount - 1; x++) {
                     //load dummy images into relative gallery div
                     let gal = document.querySelector('#gallery');
-                    gal.insertAdjacentHTML('beforeend', '<div class="loader"><img src="' + filePath + 'images/image-dummy.png" class="fadeRight" alt=""/></div>');
+                    gal.insertAdjacentHTML('beforeend', '<div class="loader"><img src="' + filePath + '/images/image-dummy.png" class="fadeRight" alt=""/></div>');
                 };
                 loadThumbs(type);
             }
@@ -351,6 +351,7 @@
         let match;
         let div = document.querySelector('.lightbox'); 
         let ldr = document.querySelector('.loader-img');
+        let captiondiv = document.querySelector('.caption');
         let srcc = target.getAttribute("src"); 
         let clickedImg = srcc.replace('/thumbs', '/fullsize');
         //Show lightbox but only loader for now until img loads ...
@@ -387,6 +388,10 @@
                                 }
                             }                  
                         }
+                        //**************************************************
+                        if(!slowLoad){ //hide loader if normal connection...
+                            ldr.setAttribute('style', 'display:none');
+                        } 
                         //**************************************************
                         document.body.setAttribute('style', 'overflow:hidden');
                         setTimeout(() => {
@@ -625,6 +630,7 @@
         let ldr = document.querySelector('.loader-img');
         let div = document.querySelector('.lightbox');
         let img = div.querySelector(".lightbox img");
+        let captiondiv = document.querySelector('.caption');
         //Hide all lightbox descendants except loader (if slowLoad) ...
         //************************************************** 
         let descLtbx = div.getElementsByTagName('*');
@@ -650,10 +656,15 @@
             img.onload = prevNext = () => {
             //reshow all lightbox elems but hide loader ...
             //************************************************** 
-            for(elem of arrdescLtbx){
+            for(elem of arrdescLtbx){                           
                 if(elem !== ldr){
-                    elem.setAttribute('style', 'display:block');
-                }  
+                    elem.setAttribute('style', 'display:block;');
+                }                
+                if(!captions){
+                    if(elem === captiondiv){
+                        elem.setAttribute('style', 'display:none;');
+                    }
+                }                  
             }
             //************************************************** 
                 //********************************************
