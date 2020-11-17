@@ -3,7 +3,7 @@
    ========================================================================== */
 
    html, body { height:100%; width:100%; margin:0; }
-   body { background: url('images/double-bubble-dark.png'); };
+   body { background: #232323; };
    
    img { max-width:100%; }
    *, *:before, *:after {
@@ -64,7 +64,7 @@
    
    .inactive { text-decoration:none; color:white; }
    .active { text-decoration:underline; color:#FFA000 !important; }
-   .warn { padding-top:40px; border-top:1px solid #999999;}
+   .warn { padding-top:40px; border-top:1px solid #999999; color:#ccc; }
    
    /* ==========================================================================
                LIGHTBOX NAVIGATION

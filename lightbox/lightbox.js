@@ -188,9 +188,13 @@
                     if(typeof lastThumb === "undefined"){
                         if(filters){
                             let warn = document.querySelector('.warn');
-                            console.log(typeof warn);
                             if (warn !== null) {
-                                warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any images in the ' + type + '. category!</h3>');
+                                if (type !== "all"){
+                                    warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any images in the ' + type + ' category!<br> Set filters to false in the options if you are not using filters.</h3>');
+                                }
+                                else {
+                                    warn.insertAdjacentHTML("beforeend", '<h3>Doesn&#39;t look like we have any images in the filtering subfolders.<br> Set filters to false in the options if you are not using filters.</h3>');
+                                }
                             }
                             else {
                                 console.log('Doesnt look like we have any images in the ' + type + '. category.')
