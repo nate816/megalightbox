@@ -10,8 +10,6 @@ else {
     $filters = false;
 }
 
-
-
 if (empty($filePath)){
     $root = dirname(__FILE__);
 }
@@ -41,8 +39,6 @@ if ($filters){
     }
 }
 
-
-
 //update file permissions to delete/create images etc...
 chmod($root, 0755);
 chmod($root . '/thumbs.php', 0644);
@@ -57,20 +53,20 @@ else {
 }
 
 foreach (array_filter(glob($path), 'is_file') as $data)
-                {
-                    if($filters){
-                        if($type == "all"){
-                            array_push($fullSizeArray, $filePath . $data);
-                        }
-                        else {
-                            if (stripos(json_encode($data), $type) !== false) {
-                                    array_push($fullSizeArray, $filePath . $data); 
-                                }
-                        }
+    {
+        if($filters){
+            if($type == "all"){
+                array_push($fullSizeArray, $filePath . strtolower($data));
+            }
+            else {
+                if (stripos(json_encode($data), $type) !== false) {
+                        array_push($fullSizeArray, $filePath . strtolower($data)); 
                     }
-                    else { //no filters
-                        array_push($fullSizeArray, $filePath . $data);
-                    }
-                }
-                echo json_encode($fullSizeArray);
+            }
+        }
+        else { //no filters
+            array_push($fullSizeArray, $filePath . strtolower($data));
+        }
+    }
+echo json_encode($fullSizeArray);
 ?>

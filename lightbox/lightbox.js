@@ -6,7 +6,6 @@
     //************************************************************************
     //  USER OPTIONS
     const options = {
-        'filePath' : "../lightbox/", // directory path to your lightbox files
         'captions': false, // enable/disable captions*
         // * use captions.xml to edit captions
         'filters' : true, // enable/disable category filters
@@ -20,9 +19,11 @@
 
     Object.freeze(options);
 
-    const { filePath, captions, filters, loadTime, rollover, slider } = options;
+    const { captions, filters, loadTime, rollover, slider } = options;
 
     //************************************************************************
+
+    const filePath = "./lightbox/";
 
     var resizeDone, captionsLoaded = false, imgCount;
     var notLoaded = true, nav = false;
@@ -197,7 +198,7 @@
                                 }
                             }
                             else {
-                                console.log('Doesnt look like we have any images in the ' + type + '. category.')
+                                console.log('Doesnt look like we have any images in the ' + type + ' category.')
                             }
                         }
                         const ldr = document.querySelectorAll('.loader');
